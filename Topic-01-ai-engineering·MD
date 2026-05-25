@@ -1,0 +1,247 @@
+# 📘 Topic 1 — AI Engineering Foundations
+> **Codebasics AI Engineering Bootcamp** · Week 1 of 11  
+> Status: 🟡 In Progress
+
+---
+
+## 🗺️ What is AI Engineering?
+
+### Real-World Analogy
+> Think of traditional software engineering as **building a car from scratch**.  
+> An AI Engineer gets a **pre-built, highly intelligent engine** (the LLM) and their job is to:
+> - Wire it up to real systems
+> - Make it useful for real users
+> - Ship it reliably at scale
+
+You don't train the model. You **orchestrate** it.
+
+---
+
+## 🧩 Where AI Engineering Sits
+
+```
+┌─────────────────┐   ┌─────────────────┐     ┌──────────────────────┐
+│  Data Science   │   │  ML Engineering  │   │  Software Engineering │
+│ Models, stats,  │   │ Train, serve,    │   │  APIs, systems,       │
+│   research      │   │   pipelines      │   │    products           │
+└────────┬────────┘   └────────┬─────────┘   └──────────┬────────────┘
+         │                     │                         │
+         └─────────────────────▼─────────────────────────┘
+                        ┌──────────────┐
+                        │ AI Engineer  │  ◀── You are here
+                        │ Build + ship │
+                        │ LLM products │
+                        └──────┬───────┘
+               ┌───────────────┼────────────────┐
+               ▼               ▼                ▼
+         RAG Systems       AI Agents        LLM APIs
+      Search + generation  Autonomous     Integrate, eval,
+                             tasks            ship
+```
+
+---
+
+## 🆚 AI Engineer vs ML Engineer
+
+| | AI Engineer | ML Engineer |
+|---|---|---|
+| **Focus** | Build products with LLMs | Train & serve models |
+| **Primary skill** | API integration, orchestration | Math, training pipelines |
+| **Output** | Shipped AI product | Trained model / ML system |
+| **You need** | Strong software skills | Strong ML/math skills |
+| **This bootcamp** | ✅ Yes | ❌ Not the focus |
+
+> 💡 Your 13 years of engineering leadership is a **massive advantage** here.  
+> You already think in systems, APIs, and shipped products.
+
+---
+
+## 🛠️ What AI Engineers Actually Build
+
+| Skill Area | Topics Covered |
+|---|---|
+| Call LLMs via APIs | Topics 2–3 |
+| Make LLMs smarter (RAG) | Topic 4 |
+| Make LLMs act (Agents) | Topics 5–6 |
+| Evaluate & deploy safely | Topics 7–8 |
+| Build full products | Topics 9–22 |
+
+---
+
+## 💻 Core Pattern — It's Just an API Call!
+
+The mental model you already have **transfers directly**.
+
+### C# (what you already know)
+```csharp
+// Calling a Payment API — familiar pattern
+var payload = new StringContent(
+    JsonSerializer.Serialize(new { amount = 100 }),
+    Encoding.UTF8, "application/json"
+);
+var response = await httpClient.PostAsync(
+    "https://payment-api.com/charge", payload
+);
+var result = await response.Content.ReadAsStringAsync();
+Console.WriteLine(result);
+```
+
+### Python (what you're learning)
+```python
+# Calling an LLM API — same concept, intelligent output!
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.chat.completions.create(
+    model="gpt-4",
+    messages=[
+        {"role": "user", "content": "Summarise this report in 3 bullet points"}
+    ]
+)
+
+print(response.choices[0].message.content)
+```
+
+> 🔑 **Key Insight:** Same mental model → `call → response`  
+> Only difference: the response is **intelligent text** instead of structured data.
+
+---
+
+## 🌐 AI Trends 2026
+
+| Trend | Why It Matters | Bootcamp Topic |
+|---|---|---|
+| **Agentic AI** | LLMs that take actions, not just answer questions | Topics 5–6 |
+| **RAG** | Give LLMs access to your private data | Topic 4 |
+| **MCP** | Standard for connecting LLMs to tools | Topic 9 |
+| **Multimodal AI** | LLMs that see images, PDFs, video | Topic 12 |
+| **Local AI / SLMs** | Run models on your own machine | Topic 14 |
+| **AI Evals** | Systematically test if your AI is working | Topics 7–8 |
+
+---
+
+## 🏗️ The AI Engineering Stack — Bird's Eye View
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                       USER INTERFACE                         │
+│                   (Web app, API, CLI, Voice)                 │
+├─────────────────────────────────────────────────────────────┤
+│                    ORCHESTRATION LAYER                       │
+│           LangChain · LangGraph · Custom agents              │
+├───────────────────┬─────────────────────────────────────────┤
+│   RETRIEVAL       │         LLM LAYER                        │
+│   VectorDB        │   OpenAI · Anthropic · Groq · Local      │
+│   Qdrant · FAISS  │                                          │
+├───────────────────┴─────────────────────────────────────────┤
+│                      INFRASTRUCTURE                          │
+│              AWS · FastAPI · Monitoring · Evals              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🔧 Dev Setup — Step by Step
+
+### ✅ Checklist
+- [ ] Python 3.11+ installed
+- [ ] `pip` and `venv` working
+- [ ] VS Code + Python extension installed
+- [ ] `.env` file pattern understood (never commit API keys!)
+- [ ] Groq free API key obtained → https://console.groq.com
+- [ ] Git set up
+
+---
+
+### Step 1 — Virtual Environment
+
+```bash
+# Create venv
+python -m venv .venv
+
+# Activate — Windows
+.venv\Scripts\activate
+
+# Activate — Mac/Linux
+source .venv/bin/activate
+
+# Install packages
+pip install openai python-dotenv fastapi uvicorn
+```
+
+> 🔵 **C# Parallel:** `venv` = your `.csproj` NuGet package boundary.  
+> Each project gets its own isolated dependencies. Same idea!
+
+---
+
+### Step 2 — API Keys the Right Way
+
+```bash
+# .env file — NEVER commit this to Git!
+GROQ_API_KEY=your_key_here
+```
+
+```python
+# Python — Load your key safely
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+api_key = os.getenv("GROQ_API_KEY")
+```
+
+```csharp
+// C# Equivalent — you already know this!
+var apiKey = configuration["GROQ_API_KEY"];
+// or
+var apiKey = Environment.GetEnvironmentVariable("GROQ_API_KEY");
+```
+
+---
+
+## 🧠 Key Concepts Glossary
+
+| Concept | Simple Definition |
+|---|---|
+| **LLM** | Large Language Model — the AI brain (GPT-4, Claude, Gemini) |
+| **API** | A way to call a service over HTTP — you know this! |
+| **Prompt** | The instruction/question you send to the LLM |
+| **Token** | ~0.75 words — how LLMs measure text length |
+| **Context Window** | Max tokens an LLM can "see" at once |
+| **Inference** | Running the model to get an answer |
+| **RAG** | Retrieval-Augmented Generation — LLM + your private data |
+| **Agent** | An LLM that can plan, use tools, and take actions |
+
+---
+
+## 📝 Quiz Questions (Topic 1)
+
+1. What is the key difference between an AI Engineer and an ML Engineer?
+2. Why don't AI Engineers typically train models from scratch?
+3. What is a virtual environment in Python, and why use one?
+4. Name 3 AI trends in 2026 that this bootcamp covers.
+5. In the C# vs Python code comparison, what is conceptually the same between calling a payment API and calling an LLM?
+
+---
+
+## 🚀 Projects Unlocked — Topic 1 + 2
+
+| Project | Skills Used | Status |
+|---|---|---|
+| Market Cap Calculator | Python + OOP | 🔜 Up next |
+| GitHub Profile Analyzer | External APIs + REST | 🔒 After Topic 2 |
+
+---
+
+## 🔗 Resources
+
+- Groq Console (free LLM API): https://console.groq.com
+- Python Docs: https://docs.python.org/3/
+- FastAPI Docs: https://fastapi.tiangolo.com
+- LangChain Docs: https://docs.langchain.com
+
+---
+
+> **Next:** Topic 2 — Python Fundamentals, REST APIs, FastAPI & First LLM Call  
+> Say `Start Topic 2` when ready!

@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Topic 1 — AI Engineering Foundations</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0c0e13;
+    --surface: #13161e;
+    --surface2: #1b1f2b;
+    --border: rgba(255,255,255,0.07);
+    --border-bright: rgba(255,255,255,0.14);
+    --accent: #5bffa0;
+    --accent2: #5bb8ff;
+    --accent3: #ff9f5b;
+    --text: #e8eaf2;
+    --muted: #7c83a0;
+    --faint: #3a3f54;
+    --heading: #ffffff;
+    --mono: 'DM Mono', monospace;
+    --display: 'Syne', sans-serif;
+    --body: 'Lora', serif;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  /* ── Background texture ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 10% 0%, rgba(91,255,160,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 90% 100%, rgba(91,184,255,0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+
+  /* ── Header ── */
+  .hero {
+    border-bottom: 1px solid var(--border-bright);
+    padding-bottom: 2.5rem;
+    margin-bottom: 3rem;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+
+  .pill {
+    font-family: var(--display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+    border: 1px solid;
+  }
+  .pill-green { color: var(--accent); border-color: rgba(91,255,160,0.3); background: rgba(91,255,160,0.06); }
+  .pill-blue  { color: var(--accent2); border-color: rgba(91,184,255,0.3); background: rgba(91,184,255,0.06); }
+  .pill-orange{ color: var(--accent3); border-color: rgba(255,159,91,0.3); background: rgba(255,159,91,0.06); }
+
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    color: var(--heading);
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .hero-sub {
+    font-family: var(--display);
+    font-size: 14px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Section headings ── */
+  .section { margin-bottom: 3rem; animation: fadeUp 0.5s ease both; }
+  .section:nth-child(2)  { animation-delay: 0.05s; }
+  .section:nth-child(3)  { animation-delay: 0.10s; }
+  .section:nth-child(4)  { animation-delay: 0.15s; }
+  .section:nth-child(5)  { animation-delay: 0.20s; }
+  .section:nth-child(6)  { animation-delay: 0.25s; }
+  .section:nth-child(7)  { animation-delay: 0.30s; }
+  .section:nth-child(8)  { animation-delay: 0.35s; }
+  .section:nth-child(9)  { animation-delay: 0.40s; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(91,255,160,0.08);
+    border: 1px solid rgba(91,255,160,0.2);
+    border-radius: 6px;
+    padding: 2px 8px;
+    letter-spacing: 0.06em;
+  }
+
+  h2 {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--heading);
+    letter-spacing: -0.01em;
+  }
+
+  /* ── Analogy card ── */
+  .analogy {
+    background: var(--surface);
+    border: 1px solid var(--border-bright);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 1.25rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .analogy::before {
+    content: '"';
+    position: absolute;
+    top: -10px; right: 16px;
+    font-size: 80px;
+    color: rgba(91,255,160,0.08);
+    font-family: var(--display);
+    font-weight: 800;
+    line-height: 1;
+  }
+  .analogy-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .analogy p { font-size: 15px; color: var(--text); line-height: 1.7; }
+  .analogy strong { color: var(--accent); font-weight: 500; }
+
+  /* ── Table ── */
+  .table-wrap {
+    border: 1px solid var(--border-bright);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead tr { background: var(--surface2); }
+  th {
+    font-family: var(--display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 16px;
+    text-align: left;
+  }
+  td {
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  td:first-child { color: var(--muted); font-family: var(--display); font-size: 13px; font-weight: 600; }
+  .yes { color: var(--accent) !important; }
+  .no  { color: #ff6b6b !important; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+  /* ── Code blocks ── */
+  .code-wrap { margin-bottom: 12px; }
+  .code-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 6px 6px 0 0;
+    border: 1px solid;
+    border-bottom: none;
+  }
+  .label-py  { color: var(--accent);  border-color: rgba(91,255,160,0.2);  background: rgba(91,255,160,0.06); }
+  .label-cs  { color: var(--accent2); border-color: rgba(91,184,255,0.2);  background: rgba(91,184,255,0.06); }
+  .label-sh  { color: var(--accent3); border-color: rgba(255,159,91,0.2);  background: rgba(255,159,91,0.06); }
+
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--border-bright);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) var(--radius-sm);
+    padding: 1.1rem 1.25rem;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    color: #c9d1e8;
+  }
+  .kw { color: #ff7eb3; }
+  .fn { color: var(--accent2); }
+  .str { color: var(--accent3); }
+  .cm { color: var(--faint); font-style: italic; }
+  .var { color: var(--accent); }
+
+  /* ── Insight box ── */
+  .insight {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: rgba(91,184,255,0.05);
+    border: 1px solid rgba(91,184,255,0.15);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #a8cfee;
+    line-height: 1.6;
+    margin-top: 10px;
+  }
+  .insight .icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── Stack layers ── */
+  .stack { display: flex; flex-direction: column; gap: 4px; }
+  .stack-layer {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .stack-layer:hover { border-color: var(--border-bright); background: var(--surface2); }
+  .stack-layer:first-child { border-top: 2px solid var(--accent); }
+  .layer-icon { font-size: 20px; flex-shrink: 0; }
+  .layer-name { font-family: var(--display); font-size: 13px; font-weight: 700; color: var(--heading); min-width: 130px; }
+  .layer-tools { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+  /* ── Trend grid ── */
+  .trend-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+  .trend-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+  .trend-card:hover { border-color: var(--border-bright); transform: translateY(-2px); }
+  .trend-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .trend-name { font-family: var(--display); font-size: 13px; font-weight: 700; color: var(--heading); }
+  .trend-topic { font-family: var(--mono); font-size: 10px; color: var(--muted); background: var(--surface2); padding: 2px 7px; border-radius: 4px; }
+  .trend-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .trend-icon { font-size: 18px; margin-bottom: 8px; }
+
+  /* ── Glossary grid ── */
+  .gloss-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px; }
+  .gloss-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    transition: border-color 0.2s;
+  }
+  .gloss-item:hover { border-color: var(--border-bright); }
+  .gloss-term { font-family: var(--display); font-size: 13px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+  .gloss-def { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* ── Checklist ── */
+  .checklist { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+  .checklist li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    color: var(--text);
+    background: var(--surface);
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+  .checklist li:hover { background: var(--surface2); }
+  .checklist li.done { color: var(--muted); }
+  .checklist li.done .cb { background: rgba(91,255,160,0.15); border-color: var(--accent); }
+  .checklist li.done .cb::after { opacity: 1; }
+  .cb {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--faint);
+    border-radius: 5px;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.2s;
+  }
+  .cb::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  /* ── Projects table ── */
+  .proj-status-ready { color: var(--accent); font-weight: 600; }
+  .proj-status-locked { color: var(--faint); }
+
+  /* ── Quiz section ── */
+  .quiz-list { list-style: none; display: flex; flex-direction: column; gap: 10px; counter-reset: quiz; }
+  .quiz-list li {
+    counter-increment: quiz;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .quiz-list li::before {
+    content: counter(quiz);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(91,255,160,0.08);
+    border: 1px solid rgba(91,255,160,0.2);
+    border-radius: 5px;
+    padding: 2px 7px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── Resources ── */
+  .resources { display: flex; flex-direction: column; gap: 6px; }
+  .res-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    color: var(--accent2);
+    font-size: 13px;
+    font-family: var(--mono);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .res-link:hover { border-color: rgba(91,184,255,0.3); background: rgba(91,184,255,0.05); }
+  .res-label { color: var(--muted); font-size: 12px; min-width: 160px; font-family: var(--body); }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: gap;
+    gap: 12px;
+  }
+  .footer-left { font-family: var(--mono); font-size: 12px; color: var(--faint); }
+  .next-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #0c0e13;
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 9px 18px;
+    border-radius: 100px;
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .next-btn:hover { opacity: 0.88; transform: translateX(2px); }
+
+  /* ── Animation ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .page { padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.75rem; }
+    .trend-grid { grid-template-columns: 1fr; }
+    .gloss-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── HERO ── -->
+  <div class="hero">
+    <div class="pill-row">
+      <span class="pill pill-green">Week 1 of 11</span>
+      <span class="pill pill-blue">Codebasics Bootcamp</span>
+      <span class="pill pill-orange">🟡 In Progress</span>
+    </div>
+    <h1>Topic 1 — <span>AI Engineering</span> Foundations</h1>
+    <p class="hero-sub">Your first step into building production AI products</p>
+  </div>
+
+  <!-- ── 1. WHAT IS AI ENGINEERING ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>What is AI Engineering?</h2>
+    </div>
+    <div class="analogy">
+      <div class="analogy-label">🔑 Real-world analogy</div>
+      <p>
+        Think of traditional software engineering as <strong>building a car from scratch</strong>.<br>
+        An AI Engineer gets a <strong>pre-built, highly intelligent engine</strong> (the LLM) and their job is to:
+        wire it up to real systems, make it useful for real users, and ship it reliably at scale.
+        <br><br>
+        <strong>You don't train the model. You orchestrate it.</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- ── 2. ROLE COMPARISON ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>AI Engineer vs ML Engineer</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th></th><th>AI Engineer</th><th>ML Engineer</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Focus</td><td>Build products with LLMs</td><td>Train &amp; serve models</td></tr>
+          <tr><td>Primary skill</td><td>API integration, orchestration</td><td>Math, training pipelines</td></tr>
+          <tr><td>Output</td><td>Shipped AI product</td><td>Trained model / ML system</td></tr>
+          <tr><td>You need</td><td>Strong software skills</td><td>Strong ML/math skills</td></tr>
+          <tr><td>This bootcamp</td><td class="yes">✅ Yes</td><td class="no">❌ Not the focus</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="insight">
+      <span class="icon">💡</span>
+      Your 13 years of engineering leadership is a <strong>massive advantage</strong>. You already think in systems, APIs, and shipped products — that's 70% of AI Engineering.
+    </div>
+  </div>
+
+  <!-- ── 3. STACK ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>The AI Engineering Stack</h2>
+    </div>
+    <div class="stack">
+      <div class="stack-layer">
+        <span class="layer-icon">🖥️</span>
+        <span class="layer-name">User Interface</span>
+        <span class="layer-tools">Web app · API · CLI · Voice</span>
+      </div>
+      <div class="stack-layer">
+        <span class="layer-icon">🔗</span>
+        <span class="layer-name">Orchestration</span>
+        <span class="layer-tools">LangChain · LangGraph · Custom agents</span>
+      </div>
+      <div class="stack-layer">
+        <span class="layer-icon">🗄️</span>
+        <span class="layer-name">Retrieval + LLM</span>
+        <span class="layer-tools">Qdrant · FAISS · OpenAI · Anthropic · Groq</span>
+      </div>
+      <div class="stack-layer">
+        <span class="layer-icon">⚙️</span>
+        <span class="layer-name">Infrastructure</span>
+        <span class="layer-tools">AWS · FastAPI · Monitoring · Evals</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 4. CODE COMPARISON ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Core Pattern — It's Just an API Call</h2>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-label label-cs">C# — Calling a Payment API (what you know)</div>
+      <pre><span class="cm">// Familiar HTTP call pattern</span>
+<span class="kw">var</span> payload = <span class="kw">new</span> <span class="fn">StringContent</span>(
+    JsonSerializer.<span class="fn">Serialize</span>(<span class="kw">new</span> { amount = <span class="var">100</span> }),
+    Encoding.UTF8, <span class="str">"application/json"</span>
+);
+<span class="kw">var</span> response = <span class="kw">await</span> httpClient.<span class="fn">PostAsync</span>(
+    <span class="str">"https://payment-api.com/charge"</span>, payload
+);
+<span class="kw">var</span> result = <span class="kw">await</span> response.Content.<span class="fn">ReadAsStringAsync</span>();
+Console.<span class="fn">WriteLine</span>(result);</pre>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-label label-py">Python — Calling an LLM API (same concept!)</div>
+      <pre><span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+
+client = <span class="fn">OpenAI</span>()
+
+response = client.chat.completions.<span class="fn">create</span>(
+    model=<span class="str">"gpt-4"</span>,
+    messages=[
+        {<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"Summarise in 3 bullet points"</span>}
+    ]
+)
+<span class="fn">print</span>(response.choices[<span class="var">0</span>].message.content)</pre>
+    </div>
+
+    <div class="insight">
+      <span class="icon">🔑</span>
+      Same mental model: <strong>call → response</strong>. Only difference — the response is intelligent text, not structured data.
+    </div>
+  </div>
+
+  <!-- ── 5. DEV SETUP ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Dev Setup Checklist</h2>
+    </div>
+    <ul class="checklist" id="checklist">
+      <li onclick="toggle(this)"><span class="cb"></span> Python 3.11+ installed</li>
+      <li onclick="toggle(this)"><span class="cb"></span> pip and venv working</li>
+      <li onclick="toggle(this)"><span class="cb"></span> VS Code + Python extension installed</li>
+      <li onclick="toggle(this)"><span class="cb"></span> .env file pattern understood (never commit API keys!)</li>
+      <li onclick="toggle(this)"><span class="cb"></span> Groq free API key obtained → console.groq.com</li>
+      <li onclick="toggle(this)"><span class="cb"></span> Git set up</li>
+    </ul>
+
+    <br>
+    <div class="code-wrap">
+      <div class="code-label label-sh">Terminal — venv setup</div>
+      <pre>python -m venv .venv
+
+<span class="cm"># Windows</span>
+.venv\Scripts\activate
+
+<span class="cm"># Mac / Linux</span>
+source .venv/bin/activate
+
+pip install openai python-dotenv fastapi uvicorn</pre>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-label label-py">Python — Load API key safely</div>
+      <pre><span class="kw">from</span> dotenv <span class="kw">import</span> load_dotenv
+<span class="kw">import</span> os
+
+<span class="fn">load_dotenv</span>()
+api_key = os.<span class="fn">getenv</span>(<span class="str">"GROQ_API_KEY"</span>)</pre>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-label label-cs">C# — Same idea (you already know this!)</div>
+      <pre><span class="kw">var</span> apiKey = configuration[<span class="str">"GROQ_API_KEY"</span>];
+<span class="cm">// or</span>
+<span class="kw">var</span> apiKey = Environment.<span class="fn">GetEnvironmentVariable</span>(<span class="str">"GROQ_API_KEY"</span>);</pre>
+    </div>
+
+    <div class="insight">
+      <span class="icon">🔵</span>
+      C# parallel: <strong>venv = your .csproj NuGet boundary</strong>. Each project gets isolated dependencies. Same concept, different syntax.
+    </div>
+  </div>
+
+  <!-- ── 6. TRENDS ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>AI Trends 2026</h2>
+    </div>
+    <div class="trend-grid">
+      <div class="trend-card">
+        <div class="trend-icon">🤖</div>
+        <div class="trend-top">
+          <span class="trend-name">Agentic AI</span>
+          <span class="trend-topic">T5–6</span>
+        </div>
+        <div class="trend-desc">LLMs that take actions, not just answer questions</div>
+      </div>
+      <div class="trend-card">
+        <div class="trend-icon">🔍</div>
+        <div class="trend-top">
+          <span class="trend-name">RAG</span>
+          <span class="trend-topic">T4</span>
+        </div>
+        <div class="trend-desc">Give LLMs access to your private data</div>
+      </div>
+      <div class="trend-card">
+        <div class="trend-icon">🔌</div>
+        <div class="trend-top">
+          <span class="trend-name">MCP</span>
+          <span class="trend-topic">T9</span>
+        </div>
+        <div class="trend-desc">Standard protocol for connecting LLMs to tools</div>
+      </div>
+      <div class="trend-card">
+        <div class="trend-icon">🖼️</div>
+        <div class="trend-top">
+          <span class="trend-name">Multimodal AI</span>
+          <span class="trend-topic">T12</span>
+        </div>
+        <div class="trend-desc">LLMs that see images, PDFs, video</div>
+      </div>
+      <div class="trend-card">
+        <div class="trend-icon">💻</div>
+        <div class="trend-top">
+          <span class="trend-name">Local AI / SLMs</span>
+          <span class="trend-topic">T14</span>
+        </div>
+        <div class="trend-desc">Run powerful models on your own machine</div>
+      </div>
+      <div class="trend-card">
+        <div class="trend-icon">✅</div>
+        <div class="trend-top">
+          <span class="trend-name">AI Evals</span>
+          <span class="trend-topic">T7–8</span>
+        </div>
+        <div class="trend-desc">Systematically test if your AI is working</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 7. GLOSSARY ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2>Key Concepts Glossary</h2>
+    </div>
+    <div class="gloss-grid">
+      <div class="gloss-item">
+        <div class="gloss-term">LLM</div>
+        <div class="gloss-def">Large Language Model — the AI brain (GPT-4, Claude, Gemini)</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">API</div>
+        <div class="gloss-def">A way to call a service over HTTP — you already know this!</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Prompt</div>
+        <div class="gloss-def">The instruction or question you send to the LLM</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Token</div>
+        <div class="gloss-def">~0.75 words — how LLMs measure and charge for text</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Context Window</div>
+        <div class="gloss-def">Max tokens an LLM can "see" at once in one call</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Inference</div>
+        <div class="gloss-def">Running the model to generate an answer</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">RAG</div>
+        <div class="gloss-def">Retrieval-Augmented Generation — LLM + your private data</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Agent</div>
+        <div class="gloss-def">An LLM that can plan, use tools, and take actions</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 8. QUIZ ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2>Quiz Questions</h2>
+    </div>
+    <ol class="quiz-list">
+      <li>What is the key difference between an AI Engineer and an ML Engineer?</li>
+      <li>Why don't AI Engineers typically train models from scratch?</li>
+      <li>What is a virtual environment in Python, and why use one?</li>
+      <li>Name 3 AI trends in 2026 that this bootcamp covers.</li>
+      <li>In the C# vs Python code comparison, what is conceptually the same between calling a payment API and calling an LLM?</li>
+    </ol>
+  </div>
+
+  <!-- ── 9. PROJECTS ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <h2>Projects Unlocked</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Project</th><th>Skills</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Market Cap Calculator</td><td>Python + OOP</td><td class="proj-status-ready">🔜 Next up</td></tr>
+          <tr><td>GitHub Profile Analyzer</td><td>External APIs + REST</td><td class="proj-status-locked">🔒 After Topic 2</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── 10. RESOURCES ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <h2>Resources</h2>
+    </div>
+    <div class="resources">
+      <a class="res-link" href="https://console.groq.com" target="_blank">
+        <span class="res-label">Groq Console (free API)</span>
+        console.groq.com ↗
+      </a>
+      <a class="res-link" href="https://docs.python.org/3/" target="_blank">
+        <span class="res-label">Python Docs</span>
+        docs.python.org/3/ ↗
+      </a>
+      <a class="res-link" href="https://fastapi.tiangolo.com" target="_blank">
+        <span class="res-label">FastAPI Docs</span>
+        fastapi.tiangolo.com ↗
+      </a>
+      <a class="res-link" href="https://docs.langchain.com" target="_blank">
+        <span class="res-label">LangChain Docs</span>
+        docs.langchain.com ↗
+      </a>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <div class="footer">
+    <span class="footer-left">Topic 1 of 22 · Codebasics AI Engineering Bootcamp</span>
+    <span style="font-family:var(--display);font-size:13px;color:var(--muted);">Next → Topic 2: Python · REST APIs · FastAPI</span>
+  </div>
+
+</div>
+
+<script>
+  function toggle(el) {
+    el.classList.toggle('done');
+    const done = document.querySelectorAll('.checklist li.done').length;
+    const total = document.querySelectorAll('.checklist li').length;
+    if (done === total) {
+      document.querySelector('.pill-orange').textContent = '✅ Setup Complete';
+      document.querySelector('.pill-orange').style.color = '#5bffa0';
+      document.querySelector('.pill-orange').style.borderColor = 'rgba(91,255,160,0.3)';
+      document.querySelector('.pill-orange').style.background = 'rgba(91,255,160,0.06)';
+    }
+  }
+</script>
+</body>
+</html>
